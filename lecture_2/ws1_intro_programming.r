@@ -104,7 +104,7 @@ print(goose)
 
 ## Often, we'll want to examine or manipulate multiple things (numbers, strings, what have you) in a group, either all at once or in sequence. 
 ## You'll want to make what in English we would call a list. The word *list* has a very specific meaning in most programming languages, so the more general
-## term for this sort of structure is an *array*, specifically a *1-dimensional array*.
+## term for this sort of structure is an *array*, specifically a *1-dimensional array*. An *array* is any collection of values that are all stored as a single object.
 ## In R the most common type of 1D array is called a *vector*. You create vectors with the command c():
 numeric_vector <- c(1, 5, 8)
 string_vector <- c("Hello", "World")
