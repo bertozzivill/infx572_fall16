@@ -78,14 +78,30 @@ summary(data_frame)
 ## Thrilling as it is to enter all the values of a dataset manually, we don't want to spend our lives doing that.
 ## This is why we keep our data in things like spreadsheets or automatically generated formats. You *can* load data
 ## from a relative of an excel spreadsheet called a CSV (comma separated values file), and from a variety of other
-## data formats, but R also comes with some pre-packaged datasets that you can load and look at using the load() function.
+## data formats, but R also comes with some pre-packaged datasets that you can load and look at using the data() function.
 
 ## These datasets mostly live in other libraries, though. Some good ones live in the {car} library we installed and loaded
 ## just a minute ago. Let's look at a dataset of professor salaries called "Salaries". Because we've already loaded the 
-## {car} library, we just need to call load() on this dataset name to load the dataset.
-load(Salaries)
+## {car} library, we just need to call data() on this dataset name to load the dataset.
+data(Salaries)
 
-## 
+## What does this look like?
+Salaries
+
+## Whoa, that's a lot of information! Let's use head() to just see the first few lines of the dataset
+head(Salaries)
+
+## That's better. It looks like our dataset has six columns, with pretty self-explanatory names:
+##        rank: AssocProf, AsstProf, or Prof
+##        discipline: A or B
+##        yrs.since.phd: ranges from 1-56
+##        yrs.service: ranges from 0-60
+##        sex: Male or Female
+##        salary: in USD, ranges from 57,800-231,545
+
+## Let's use this dataset to practice some simple plots.
+
+
 
 ###---- below is the code from my guest lecture of Mike's class, to be poached as needed for this lecture
 library(ggplot2)
