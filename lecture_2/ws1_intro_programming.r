@@ -126,6 +126,9 @@ numeric_vector <- c(numeric_vector, 5)
 ## To remove elements from a vector, use the following syntax:
 numeric_vector <- numeric_vector[-4]
 
+## To subset the list, use the ":":
+numeric_vector[2:3]
+
 ## QUESTION 2: what is the difference between the two snippets of code below?
 
 ## Snippet 1

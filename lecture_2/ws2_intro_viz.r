@@ -61,10 +61,18 @@ data_frame[["name"]]
 
 ## Isolate certain rows using the index syntax you learned for matrices:
 data_frame[5,]
-data_frame[1:5,] # QUIZ: why is it important to include the comma?
+data_frame[1:5,] # QUIZ: Why is it important to include the comma?
+
+## To isolate rows based on the value of one of the columns (say, we only want to see the rows about the Beatles), 
+## Use the following syntax:
+data_frame[data_frame$affiliation=="Beatle",]
 
 ## Get an overview of the entire data.frame using summary():
 summary(data_frame)
+
+## NOTE: you can next commands within each other. So, if you wanted to summarize just 
+## the data about Beatles, you could call:
+summary(data_frame[data_frame$affiliation=="Beatle",])
 
 ## We'll go into a LOT more detail about data.frames and how to manipulate them next lecture,
 ## but for now this is all the information we need. 
@@ -177,6 +185,9 @@ bare <- ggplot(Salaries)
 ## Not quite: it created an object called "bare" that, when you call it, gives us a blank grey slate.
 ## If you look at the *attributes* of this object, you'll see that it is indeed a lot of blank spaces
 ## waiting to be filled.
+bare$layers
+bare$theme
+bare$mapping
 
 ## Next step: what are plot aesthetics?
 aesthetic <- ggplot(Salaries, aes(x=yrs.since.phd, y=salary))
@@ -184,7 +195,9 @@ aesthetic <- ggplot(Salaries, aes(x=yrs.since.phd, y=salary))
 ## Ok, adding "aes" (the plot *aesthetics*) is still mostly blank but gives us a little more information:
 ## it's populated an x and y axis onto the plot. 
 ## Broadly, an *aesthetic* is anything that maps data in the dataset onto some element of the plot (x axis location,
-## y axis location, color, grouping, etc.) We'll get more into this later. 
+## y axis location, color, grouping, etc.) We'll get more into this later. Look at the "mapping" attribute 
+## to see what the aesthetics have done. 
+aesthetic$mapping
 
 ## Next: how do you put actual stuff on the plot?
 ## You have to add another function on to the end, saying what type of plot you want to make. 
