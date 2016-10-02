@@ -145,7 +145,7 @@ this_vector <- this_vector[-3]
 ## powerful tools of programming: *logic*, which uses the commands *if*,  *else*, and *else if* to dictate how code gets 
 ## executed, and *loops*, which allow you to repeat a process many times using *for* and *while*
 
-## Let's start by looking at a fairly involved loop, and break it down piece by piece The following code loops
+## Let's start by looking at a fairly involved loop, and break it down piece by piece. The following code loops
 ## through the numbers 1:10, and prints "EVEN" if the number is even and "ODD" if it's odd.
 
 sequence <- seq(1:10) # generates a vector of values from 1:10; equivalent of typing c(1,2,3,4,5,6,7,8,9,10)

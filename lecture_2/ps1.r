@@ -9,7 +9,7 @@
 ##############################################################################
 
 ## At the top of your script, load the necessary libraries for the "Salaries"
-## dataset and using the "ggplot" function.
+## dataset, the "data.table" package, and the "ggplot" function.
 
 ########################
 ## I. Intro Programming 
@@ -50,33 +50,48 @@
 ## II. 2D Arrays
 ########################
 
-## Make a data.table of ten books you've read, with columns for title, author, 
+## Make a data frame of ten books you've read, with columns for title, author, 
 ## rating on a 1-5 scale, and whether the book is fiction or nonfiction. 
 
-## Isolate just the "title" column
+## Isolate just the "title" column.
 
-## Isolate just rows 4-7
+## Isolate just rows 4-7.
 
-## Summarize the data.table (using summary()). Does this dataset consist mostly of 
-## fiction or nonfiction books? What is the average rating ? 
+## Summarize the data frame (using summary()). Does this dataset consist mostly of 
+## fiction or nonfiction books? What is the average rating? 
 
-## Load the "Salaries" dataset. How many women are there in this dataset?
-## How many men? What is the mean salary? What is the maximum salary among
+## Load the "Salaries" dataset. Converti it to at data.table.
+## How many women are there in this dataset? How many men?
+## What is the mean salary? What is the maximum salary among
 ## associate professors? What is the minimum time since Ph.D among the
 ## faculty in discipline A?
+
+
+## Advanced manipulation ---------
+## Make a fake dataset that lists the average salary by rank and sex nationwide. 
+
+## Merge this dataset onto 'Salaries'.
+
+## Make a new data.table showing mean salary by rank and discipline, reshape it wide (i.e. 'cast' it) on rank.
+
+## Melt your 'casted' data.table back to how it was before.
 
 ########################
 ## III. Visualization
 ########################
 
 ## Make a scatter plot of Salaries with years of service on the x axis
-## and salary on the y axis
+## and salary on the y axis.
 
 ## Make a bar plot of salary. 
 
 ## Make a line plot of male faculty only, with years of service on the 
 ## x axis and salary on the y axis. What might be a better format for this
 ## plot?
+
+## Make a plot of your choice, but add color.
+
+## Make a plot of your choice, but add faceting.
 
 
 
