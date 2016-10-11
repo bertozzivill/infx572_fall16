@@ -130,6 +130,9 @@ scatter_color <- ggplot(Salaries, aes(x=yrs_since_phd, y=salary, color=sex)) +
                  x="Years Since Ph.D",
                  y="Salary (USD)")
 
+## HERE: Also talk about size, opacity, deepen idea of aes vs not.
+
+
 ## 2. Add faceting ---------------------------------------------------------
 scatter_facets <- ggplot(Salaries, aes(x=yrs_since_phd, y=salary, color=sex)) +
                   geom_point() +
@@ -147,13 +150,14 @@ scatter_facet_twoway <- ggplot(Salaries, aes(x=yrs_since_phd, y=salary, color=ra
 
 
 ## 3. Add line plots ---------------------------------------------------------
-scatter_line <- ggplot(Salaries, aes(x=yrs_since_phd, color=sex)) +
-                geom_point(aes(y=salary)) +
+scatter_line <- ggplot(Salaries, aes(x=yrs_since_phd, color=sex, fill=sex)) +
+                geom_bar() +
+                geom_freqpoly() +
                 facet_grid(~department) +
-                geom_line(aes(y=nat_salary))
                 labs(title="Salary by Years Since Ph.D, Department, and Sex",
                      x="Years Since Ph.D",
                      y="Salary (USD)")
 
 
-
+## Exercise: make three plots. Each has to include at least one of these components: colors, faceting, plot overlays.
+## Each of them must be labeled. Each must include both aes and non-aes components.
