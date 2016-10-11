@@ -70,7 +70,7 @@ data_frame[data_frame$affiliation=="Beatle",]
 ## Get an overview of the entire data.frame using summary():
 summary(data_frame)
 
-## NOTE: you can next commands within each other. So, if you wanted to summarize just 
+## NOTE: you can nest commands within each other. So, if you wanted to summarize just 
 ## the data about Beatles, you could call:
 summary(data_frame[data_frame$affiliation=="Beatle",])
 
@@ -100,7 +100,7 @@ install.packages("car")
 ## explictly ask for it using the library() function. So, to actually be able to use the elements of {car}, you would say:
 library(car)
 
-## and now you're ready to go! Usually, coders put all the librarys they need for a script at the very top of the script,
+## and now you're ready to go! Usually, coders put all the libraries they need for a script at the very top of the script,
 ## so they're easier to keep track of. 
 
 ## We'll use the {car} library in the next section. Now it's your turn: can you install and load the package 
@@ -223,6 +223,7 @@ line <- ggplot(Salaries, aes(x=yrs.since.phd, y=salary)) +
 
 ## BAR PLOT: geom_bar() (NOTE: can't have a y-value aesthetic for this one)
 bar <- ggplot(Salaries, aes(x=yrs.since.phd)) +
+  
           geom_bar()
 
 ## That's it for our intro plotting lesson. I know it was boring and not very colorful, so to prove to you 

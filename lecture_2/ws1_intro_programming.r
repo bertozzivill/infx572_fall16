@@ -110,8 +110,6 @@ numeric_vector <- c(1, 5, 8)
 string_vector <- c("Hello", "World")
 boolean_vector <- c(T,T,T,F)
 
-## Notice that I assigned these three vectors to variable names, so they're stored in the environment. How would you check what each of these vectors looks like?
-
 ## QUESTION 1: Notice that all the elements of each vector are of the same type. What happens if you try to create a vector with mixed types? Experiment.
 
 ## To look at just one vector element at a time, select that element by its *index* (place in line). 
