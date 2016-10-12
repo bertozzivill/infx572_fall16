@@ -7,7 +7,7 @@ library(data.table)
 
 ## Creating a data.table --------------------------------------------------------------
 
-## Create a data.table named DT that is ten elements long, with the following rows:
+## Create a data.table named DT that is ten elements long, with the following columns:
 ## V1: the integers 1-10 
 ## V2: the letters A and B, repeating
 ## V3: the integers 1-5, repeating
@@ -27,9 +27,12 @@ DT[V3==4]
 
 ## Select all rows in which V3 is equal to 3 or 4
 DT[V3 %in% 3:4]
+DT[V3==3 | V3==4] # equivalent
 
 ## Select all rows in which V2 is equal to A
 DT[V2=="A"]
+
+## Note: can also put a comma at the end of each of these statements (e.g. DT[V3==4,])
 
 ## Subsetting on columns (j) --------------------------------------------------------------
 
@@ -38,6 +41,7 @@ DT[, V1]
 
 ## Select columns V1 and V4
 DT[, .(V1, V4)]
+DT[, list(V1, V4)] # equivalent
 
 ## Take the sum of column V4
 DT[, sum(V4)]
