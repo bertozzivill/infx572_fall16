@@ -1,90 +1,69 @@
+##############################################################################
+## Worksheet 4: Out of sample validation
+## Author: Amelia Bertozzi-Villa
+## Description: Give an example of out-of-sample validation, using the 
+##              Salaries dataset. The question: which regression is better at
+##              predicting salary, a bivariate regression on yrs.since.phd
+##              or a multivariate regression including sex?
+##############################################################################
 
 ## load libraries
 library(data.table)
 library(ggplot2)
 library(car)
 
+## set a random seed: this ensures that even randomly shuffling the dataset is replicable
+set.seed(572)
+
 ## load data 
 data(Salaries)
 Salaries <- data.table(Salaries)
 
-## Run regressions
-bivariate_regression <- lm(salary ~ yrs.since.phd, data=Salaries)
-multivariate_regression <- lm(salary ~ yrs.since.phd + sex + sex*yrs.since.phd, data=Salaries)
+## Hold out a random 10% of the data
+random_order <- sample(nrow(Salaries)) # the "sample" function randomly shuffles vectors
+Salaries <- Salaries[random_order] # reorder the data according to the random_order vector
+testing_set <- Salaries[1:40]
+training_set <- Salaries[41:nrow(Salaries)]
 
-## Predict regression outputs 
-Salaries[, predict_bi:= predict(bivariate_regression)]
-Salaries[, predict_multi:= predict(multivariate_regression)]
+## Run regressions on training set:
+bivariate_regression <- lm(salary ~ yrs.since.phd, data=training_set)
+multivariate_regression <- lm(salary ~ yrs.since.phd + sex, data=training_set)
 
-## Plot outputs
-ggplot(Salaries, aes(x=yrs.since.phd)) +
-  geom_point(aes(y=salary, color=sex), alpha=0.5) + 
-  geom_line(aes(y=predict_bi), size=2) + 
-  geom_line(aes(y=predict_multi, color=sex), size=2, alpha=0.75)
-  
+## Predict new values for TESTING set, using the "newdata" argument
+testing_set[, predict_bi:= predict(bivariate_regression, newdata = testing_set)]
+testing_set[, predict_multi:= predict(multivariate_regression, newdata = testing_set)]
 
-## Cross-validation: 
-Salaries[, c("predict_bi", "predict_multi"):=NULL]
-
-rmse_bi_list <- NULL
-rmse_multi_list <- NULL
-
-## Do this ten times:
-
-for (idx in 1:10){
-  ## Hold out a random 10% of the data
-  random_order <- sample(nrow(Salaries))
-  Salaries <- Salaries[random_order] #randomly reorder data
-  testing_set <- Salaries[1:40]
-  training_set <- Salaries[41:nrow(Salaries)]
-  
-  ## Run regressions on training set:
-  bivariate_regression <- lm(salary ~ yrs.since.phd, data=training_set)
-  multivariate_regression <- lm(salary ~ yrs.since.phd + sex + sex*yrs.since.phd, data=training_set)
-  
-  ## Predict new values for TESTING set
-  testing_set[, predict_bi:= predict(bivariate_regression, newdata = testing_set)]
-  testing_set[, predict_multi:= predict(multivariate_regression, newdata = testing_set)]
-  
-  ## Calculate error statistic
-  testing_set[, squared_error_bi:=(predict_bi - salary)^2]
-  testing_set[, squared_error_multi:=(predict_multi - salary)^2]
-  
-  rmse_bi <- sqrt(sum(testing_set$squared_error_bi)/nrow(testing_set))
-  rmse_multi <- sqrt(sum(testing_set$squared_error_multi)/nrow(testing_set))
-  
-  ## Save the error stats for this iteration of cross-validation
-  rmse_bi_list[[idx]] <- rmse_bi
-  rmse_multi_list[[idx]] <- rmse_multi
-  
-}
-
-##Plot
+## Plot the predicted and actual values: bivariate results in blue, multivariate in red
 ggplot(testing_set, aes(x=yrs.since.phd)) +
-  geom_point(aes(y=salary, color=sex), alpha=0.5) + 
-  geom_line(aes(y=predict_bi), size=2) + 
-  geom_line(aes(y=predict_multi, color=sex), size=2, alpha=0.75)
+  geom_point(aes(y=salary)) +
+  geom_point(aes(y=predict_bi), color="blue") +
+  geom_point(aes(y=predict_multi), color="red") +
+  labs(title="Out of sample validation results for two regression types",
+       x="Years Since Ph.D",
+       y="Salary")
 
-library(stats)
-## Tests for clustering
-ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=rank)) + geom_point()
+## Calculate error statistic
+## RMSE, or root-mean squared error, is calculated by:
+## 1. Calculating how far off each prediction is from the actual value (the "error")
+## 2. Squaring that value (the "squared error")
+## 3. Taking the mean of all squared errors in the testing set (the "mean squared error")
+## 4. Taking the square root of the mean squared error (the "root mean squared error"):
 
-for_kmeans <- Salaries[, list(yrs.since.phd, salary)]
-output <- kmeans(for_kmeans, 3)
-Salaries[, kmean_rank:=output$cluster]
+testing_set[, squared_error_bi:=(predict_bi - salary)^2]
+testing_set[, squared_error_multi:=(predict_multi - salary)^2]
 
-ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=factor(kmean_rank))) + geom_point()
+rmse_bi <- sqrt(sum(testing_set$squared_error_bi)/nrow(testing_set))
+rmse_multi <- sqrt(sum(testing_set$squared_error_multi)/nrow(testing_set))
+
+## We get a slightly lower RMSE value for the bivariate than the multivariate regression, which suggests that the bivariate regression 
+## is more predictive (we want a LOW root-mean squared error). However, we've just looked at one random 10% holdout of the data. To be more thorough,
+## we should see what happens when we hold out a different random 10% of the data, and then a different one, and then a different one... Usually, 
+## out-of-sample validation like this is repeated many times, and the model with the lowest RMSE on average is considered the best one. 
+
+## Test yourself: can you use a "for" loop to repeat the code above 10 times, and find the *average* RMSE for the bivariate and multivariate regressions?
 
 
-## Test k-NN 
-library(kknn)
-train <- Salaries[1:350, list(yrs.since.phd, salary, rank)]
-test <- Salaries[351:397, list(yrs.since.phd, salary, rank)]
-knn_output <- kknn(rank~., train, test, k=100)
-test[, predicted:=knn_output$fitted.values]
 
-ggplot(test, aes(x=yrs.since.phd, y=salary)) +
-    geom_point(aes(color=rank), size=5, alpha=0.3) +
-    geom_point(aes(color=predicted))
+
 
 

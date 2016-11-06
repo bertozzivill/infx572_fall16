@@ -65,3 +65,27 @@
 ## QUESTION 5: Based on your experience with supervised and unsupervised learning in this problem set, which type of machine learning do you think
 ## is most useful? Why? 
 
+
+library(stats)
+## Tests for clustering
+ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=rank)) + geom_point()
+
+for_kmeans <- Salaries[, list(yrs.since.phd, salary)]
+output <- kmeans(for_kmeans, 3)
+Salaries[, kmean_rank:=output$cluster]
+
+ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=factor(kmean_rank))) + geom_point()
+
+
+## Test k-NN 
+library(kknn)
+train <- Salaries[1:350, list(yrs.since.phd, salary, rank)]
+test <- Salaries[351:397, list(yrs.since.phd, salary, rank)]
+knn_output <- kknn(rank~., train, test, k=100)
+test[, predicted:=knn_output$fitted.values]
+
+ggplot(test, aes(x=yrs.since.phd, y=salary)) +
+  geom_point(aes(color=rank), size=5, alpha=0.3) +
+  geom_point(aes(color=predicted))
+
+
