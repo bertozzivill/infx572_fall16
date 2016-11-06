@@ -53,6 +53,7 @@ for (idx in 1:10){
   rmse_bi <- sqrt(sum(testing_set$squared_error_bi)/nrow(testing_set))
   rmse_multi <- sqrt(sum(testing_set$squared_error_multi)/nrow(testing_set))
   
+  ## Save the error stats for this iteration of cross-validation
   rmse_bi_list[[idx]] <- rmse_bi
   rmse_multi_list[[idx]] <- rmse_multi
   
@@ -73,4 +74,17 @@ output <- kmeans(for_kmeans, 3)
 Salaries[, kmean_rank:=output$cluster]
 
 ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=factor(kmean_rank))) + geom_point()
+
+
+## Test k-NN 
+library(kknn)
+train <- Salaries[1:350, list(yrs.since.phd, salary, rank)]
+test <- Salaries[351:397, list(yrs.since.phd, salary, rank)]
+knn_output <- kknn(rank~., train, test, k=100)
+test[, predicted:=knn_output$fitted.values]
+
+ggplot(test, aes(x=yrs.since.phd, y=salary)) +
+    geom_point(aes(color=rank), size=5, alpha=0.3) +
+    geom_point(aes(color=predicted))
+
 
