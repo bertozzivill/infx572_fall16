@@ -1,6 +1,11 @@
 library(stats)
+library(car)
+library(data.table)
+library(ggplot2)
 ## Tests for clustering
 
+data(Salaries)
+Salaries <- data.table(Salaries)
 
 ## K-means
 ## 1. start at K random centers
@@ -24,6 +29,20 @@ train <- Salaries[1:350, list(yrs.since.phd, salary, rank)]
 test <- Salaries[351:397, list(yrs.since.phd, salary, rank)]
 knn_output <- kknn(rank~., train, test, k=100)
 test[, predicted:=knn_output$fitted.values]
+
+example_point <- data.table(yrs.since.phd=16, salary=100000)
+
+closest <- rbind(train[yrs.since.phd<19 & yrs.since.phd>13 & rank=="AssocProf" & salary>90000 & salary<109000],
+                 train[rank=="Prof" & yrs.since.phd==16 & salary>100000 & salary<107000])
+
+
+ggplot(train, aes(x=yrs.since.phd, y=salary)) +
+  geom_point(aes(color=rank)) +
+  geom_point(data=example_point, size=3, color="green3") +
+  geom_point(data=closest, size=3, alpha=0.3, color="red") +
+  labs(title="Since 3 of the 4 points are AssocProf, new rank is AssocProf")
+
+
 
 ggplot(test, aes(x=yrs.since.phd, y=salary)) +
 geom_point(aes(color=rank), size=5, alpha=0.3) +
