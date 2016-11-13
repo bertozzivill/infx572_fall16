@@ -1,10 +1,8 @@
 ##############################################################################
 ## Worksheet 5: K-means and k-NN
 ## Author: Amelia Bertozzi-Villa
-## Description: Give an example of out-of-sample validation, using the 
-##              Salaries dataset. The question: which regression is better at
-##              predicting salary, a bivariate regression on yrs.since.phd
-##              or a multivariate regression including sex?
+## Description: Give an example of K-means and k-NN clustering methods, 
+##              discussing some interpretations of each.
 ##############################################################################
 
 ## load libraries 
@@ -12,8 +10,8 @@ library(data.table)
 library(ggplot2)
 library(car)
 
-library(kknn) # for k-nn
-library(stats) # for k-means
+library(kknn) # for k-NN
+library(stats) # for K-means
 
 ## load data 
 data(Salaries)
@@ -37,7 +35,7 @@ ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=rank)) +
 ## subset the dataset:
 for_kmeans <- Salaries[, list(yrs.since.phd, salary)]
 
-## Since we expect to see 3 different ranks, run k-means with k=3
+## Since we expect to see 3 different ranks, run K-means with K=3
 ## (the "centers" argument takes the number of clusters, run ?kmeans to see the full documentation)
 output <- kmeans(for_kmeans, centers=3)
 
@@ -52,8 +50,8 @@ ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=factor(kmean_rank))) +
   labs(title="Predicted Clusters, K=3")
 
 ## Hmm, it sort of just makes some horizontal bands across the surface. What if we did the same 
-## thing, with k=5? This is no longer trying to compare the clustering algorithm to the "rank"
-## variable, it's just playing around.
+## thing, with K=5? (This is no longer trying to compare the clustering algorithm to the "rank"
+## variable, it's just playing around.)
 output_k5 <- kmeans(for_kmeans, centers=5)
 Salaries[, kmean5_rank:= output_k5$cluster]
 ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=factor(kmean5_rank))) +
