@@ -19,6 +19,9 @@ library(stats) # for k-means
 data(Salaries)
 Salaries <- data.table(Salaries)
 
+## Set a random seed 
+set.seed(572)
+
 ## --------------------
 ## 1. K-means 
 ## --------------------
@@ -59,18 +62,74 @@ ggplot(Salaries, aes(x=yrs.since.phd, y=salary, color=factor(kmean5_rank))) +
 
 ## Nope, more bands!
 
-## Test k-NN 
-## lazy algorithm: ONLY tests the points you put in
-## for any given test point, finds the k closest train points and assigns class to the most common among those k
+## --------------------
+## 2. k-NN 
+## --------------------
 
+## Ok, now let's run k-NN on those same variables: salary and years since Ph.D as predictors, rank as the outcome.
+
+## remember, for k-NN we HAVE to split up our dataset into test and train sets, because there's nothing to predict if you don't. 
+
+## randomly shuffle "Salaries"
+new_order <- sample(nrow(Salaries))
+Salaries <- Salaries[new_order]
+
+## split this shuffled dataset in two: a training set with about 75% of the data, 
+## and a test set with about 25%
 train <- Salaries[1:350, list(yrs.since.phd, salary, rank)]
 test <- Salaries[351:397, list(yrs.since.phd, salary, rank)]
-knn_output <- kknn(rank~., train, test, k=100)
-test[, predicted:=knn_output$fitted.values]
+
+## Run the k-NN algorithm, with k=10 to start (QUIZ: what does the "k" denote here? what did it denote in K-means?)
+knn_output <- kknn(rank~., train, test, k=10)
+
+## knn_output is an object of class "kknn", which has an attribute called "fitted.values" giving the algorithms prediction
+## for each element of our training set. Notice that, because k-NN is a supervised learning method, these predictions are 
+## of the same format (factor variable with values "AsstProf", "AssocProf", and "Prof") as our original rank variable, whereas
+## K-means just gives you a cluster number because it doesn't know anything about the "rank" variable. 
+test[, predicted_rank:=knn_output$fitted.values]
+
+## Let's take a look at the results: plot the *predicted* outputs as dark circles, with a transparent circle around each one
+## showing the true value for that point. The triangles show the *training* data
+## used to make the predictions:
 
 ggplot(test, aes(x=yrs.since.phd, y=salary)) +
-geom_point(aes(color=rank), size=5, alpha=0.3) +
-geom_point(aes(color=predicted))
+  geom_point(aes(color=rank), size=5, alpha=0.3) +
+  geom_point(aes(color=predicted_rank)) +
+  geom_point(data=train, aes(color=rank), alpha=0.4, shape=2) +
+  labs(title="Predicted (dark) vs Real (opaque) Ranks, k=10")
 
+## In general, this did pretty well, but there are a few cases in which it mispredicted:
+test[rank!=predicted_rank]
+
+## Let's test a few other values of k, practicing our for loops:
+
+k_values <- c(5, 10, 25, 50, 100)
+
+for (this_k in k_values){
+  
+  ## run k-nn
+  knn_output <- kknn(rank~., train, test, k=this_k)
+  
+  ## predict a new rank 
+  test[, predicted_rank:=knn_output$fitted.values]
+  
+  ## predict results
+  plot <- ggplot(test, aes(x=yrs.since.phd, y=salary)) +
+            geom_point(aes(color=rank), size=5, alpha=0.3) +
+            geom_point(aes(color=predicted_rank)) +
+            geom_point(data=train, aes(color=rank), alpha=0.4, shape=2) +
+            labs(title=paste0("Predicted (dark) vs Real (opaque) Ranks, k=", this_k))
+  
+  print(plot)
+  
+  ## Print out how many times it mispredicts
+  number_wrong = nrow(test[rank!=predicted_rank])
+  pct_wrong = number_wrong/nrow(test)
+  print(paste0("With k=", this_k, " k-NN makes ", number_wrong, " incorrect predictions, ", pct_wrong, " percent."))
+  
+}
+
+## Which value of k predicts best for this test/train set split? What could you do to ensure that this 
+## result isn't just a result of the specific test/train split you used? 
   
   
